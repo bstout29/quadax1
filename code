@@ -1,0 +1,131 @@
+public class Program
+{ 
+    public static int[] digits = new int[] { 1, 2, 3, 4, 5, 6 };
+    public static int length = 4;
+    public static int turns = 10;
+    public static int guesses = 0;
+    public static int[] correctAnswer = new int[] { 1, 2, 3, 4 };
+    public static int[][] combinedGuesses = new int[turns][];
+    
+    public static void Main()
+    {
+        int[] guess = new int[4];
+        bool wrongGuess = true;
+        Setup();
+
+        Console.WriteLine("Welcome to Mastermind! You have 10 attempts to guess the correct 4 digit code.");        
+        
+        while (wrongGuess)
+        {
+            Continue();
+            Console.WriteLine("Enter 4 digit guess:");
+            
+            string input = Console.ReadLine().ToCharArray();
+            guess = input.Split('').Select(int.Parse).ToArray();
+
+            wrongGuess = !IsCorrectAnswer(guess) && !NoGuessesLeft();
+        }
+
+        Console.ReadLine();
+    }
+
+    public static bool IsCorrectAnswer(int[] guess)
+    {
+        string userGuess = string.Join("", guess);
+        string rightAnswer = string.Join("", correctAnswer);
+
+        if (userGuess == rightAnswer)
+        {
+            Console.WriteLine("You guessed the correct answer!");
+            return true;
+        }
+
+        CompleteCombinedGuesses(userGuess);
+        return false;
+    }
+
+    public static string GenerateHint(int[] guess)
+    {
+        int[] cloneCombinedGuesses = (int[])correctAnswer.Clone(); 
+        int numCorrectDigits = 0;
+
+        for (int i = 0; i < cloneCombinedGuesses.Length; i++)
+        {
+            if (cloneCombinedGuesses[i] == guess[i])
+            {
+                numCorrectDigits++;
+                cloneCombinedGuesses[i] = 0; 
+            }
+        }
+ 
+        int correctDigits = 0;
+
+        for (int i = 0; i < cloneCombinedGuess.Length; i++)         
+        {          
+            string clonedGuessesString = string.Join("", cloneCombinedGuesses);             
+            int targetIndex = clonedGuessesString.IndexOf(guess[i]);            
+            if (targetIndex > -1)
+            
+            {
+                correctDigits++;
+                cloneCombinedGuesses[targetIndex] = 0;
+            }
+        }
+        
+        return $"{numCorrectDigits}-{correctDigits}";
+    }
+
+    public static void CompleteCombinedGuess(int[] finalGuess)
+    {
+        for (int i = 0; i < finalGuess.Length; i++)
+        {
+            combinedGuesses[guesses][i] = finalGuess[i].ToString();
+        }
+
+        combinedGuesses[guesses][4] = GenerateHint(guess);
+
+        numTry++;
+    }
+
+    public static void Setup()
+    {
+        for (var i = 0; i < turns; i++)
+        {
+            combinedGuesses[i] = new int[length + 1];
+            for (var j = 0; j < length + 1; j++)
+            {
+                combinedGuesses[i][j] = " ";
+            }
+        }
+        return;
+    }
+
+    public static void Contine()
+    {
+        for (var i = 0; i < combinedGuesses.Length; i++)
+        {
+            Console.WriteLine("|" + String.Join("|", board[i]));
+        }
+
+        return;
+    }
+
+    public static void GenerateRandomCode()
+    {
+        Random rnd = new Random();
+        for (var i = 0; i < codeSize; i++)
+        {
+            solution[i] = letters[rnd.Next(0, letters.Length)];
+        }
+        return;
+    }
+
+    public static bool NoGuessesLeft()
+    {
+        if (guesses < 10)
+            return false;
+
+        Console.WriteLine($"You have run out of guesses. The answer was: {string.Join("", correctAnswer.ToCharArray())}");
+        return true;
+    }
+}
