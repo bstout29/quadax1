@@ -12,6 +12,7 @@ public class Program
         int[] guess = new int[4];
         bool wrongGuess = true;
         Setup();
+        GenerateRandomNumber();
 
         Console.WriteLine("Welcome to Mastermind! You have 10 attempts to guess the correct 4 digit code.");        
         
@@ -46,7 +47,9 @@ public class Program
 
     public static string GenerateHint(int[] guess)
     {
-        int[] cloneCombinedGuesses = (int[])correctAnswer.Clone(); 
+        int[] cloneCombinedGuesses = combinedGuesses.Clone(); 
+        int[] cloneCorrectAnswer = correctAnswer.Clone();
+        
         int numCorrectDigits = 0;
 
         for (int i = 0; i < cloneCombinedGuesses.Length; i++)
@@ -72,6 +75,30 @@ public class Program
             }
         }
         
+        string rightDigitWrongPosition = "";
+        string rightDigitRightPosition = "";
+        
+        for (int i = 0; i < guess.Length; i++)
+        {
+            if (cloneCorrectAnswer[i] == guess[i])
+            {
+                rightDigitRightPosition = rightDigitRightPosition + "+";
+            }
+            else
+            {
+                for (int j = 0; j < cloneCorrectAnswer.Length; j++)
+                {
+                    if (cloneCorrectAnswer[j] == guess[i])
+                    {
+                        rightDigitWrongPosition = rightDigitWrongPosition + "-";
+                    }
+                }
+            }
+        }
+        
+        Console.WriteLine("Hint: " + rightDigitRightPosition + rightDigitWrongPosition);  
+        
+        
         return $"{numCorrectDigits}-{correctDigits}";
     }
 
@@ -84,7 +111,7 @@ public class Program
 
         combinedGuesses[guesses][4] = GenerateHint(guess);
 
-        numTry++;
+        guesses++;
     }
 
     public static void Setup()
@@ -94,29 +121,29 @@ public class Program
             combinedGuesses[i] = new int[length + 1];
             for (var j = 0; j < length + 1; j++)
             {
-                combinedGuesses[i][j] = " ";
+                combinedGuesses[i][j] = 0;
             }
         }
         return;
     }
 
-    public static void Contine()
+    public static void Continue()
     {
         for (var i = 0; i < combinedGuesses.Length; i++)
         {
-            Console.WriteLine("|" + String.Join("|", board[i]));
+            Console.WriteLine("|" + String.Join("|", combinedGuesses[i]));
         }
 
         return;
     }
 
-    public static void GenerateRandomCode()
+    public static void GenerateRandomNumber()
     {
-        Random rnd = new Random();
-        for (var i = 0; i < codeSize; i++)
-        {
-            solution[i] = letters[rnd.Next(0, letters.Length)];
-        }
+        int min = 1000;
+        int max = 9999;
+        Random rdm = new Random();
+        correctAnswer = rdm.Next(min, max);
+        
         return;
     }
 
